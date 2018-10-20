@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end"></ui:define>
+
+	<ui:define name="title">
+        Pesquisar Produto
+    </ui:define>
+
+	<ui:define name="description">
+        Pesquise de acordo com os filtros 
+    </ui:define>
+	<ui:define name="body">
+		<adm:breadcrumb title="Pesquisar Produtos" />
+
+		<p:panel styleClass="card box-info" header="Produtos">
+			<h:form id="f1" prependId="false">
+
+				<div class="box box-primary">
+					<div class="box-header with-border">
+
+						<p:commandButton action="cadastro-produto?faces-redirect=true"
+							ajax="false" icon="fa fa-plus" value="Novo"
+							styleClass="btn-primary" />
+						<p:spacer width="5" />
+						<p:commandButton value="Excluir Selecionado(s)" icon="fa fa-trash"
+							styleClass="btn-danger"
+							action="#{listaProdutoMB.excluirSelecionado()}" process="@form"
+							update="@form" />
+						<p:spacer width="5" />
+						<p:commandButton id="det" value="Olhar Selecionado(s)"
+							oncomplete="PF('produtoSelecionadas').show()"
+							update="@(.ui-dialog) @this" styleClass="btn-info"
+							icon="fa fa-search" />
+						<p:separator />
+
+
+						<p:dataTable id="produtoTable" widgetVar="produtoTable" rows="5"
+							value="#{listaProdutoMB.produtos}" var="prd" rowKey="#{prd.id}"
+							selection="#{listaProdutoMB.produtosSelecionados}" paginator="true"
+							paginatorPosition="bottom"
+							styleClass="header-right"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+							currentPageReportTemplate="" rowsPerPageTemplate="5,10,15,20,30">
+
+							<p:column selectionMode="multiple" width="5%"
+								styleClass="align-center" />
+
+							<p:column headerText="Id" sortBy="#{prd.id}">
+								<h:outputLabel value="#{prd.id}" />
+							</p:column>
+
+							<p:column headerText="Nome" sortBy="#{prd.descricao}">
+
+								<h:link value="#{prd.descricao}" outcome="cadastro-produto.xhtml">
+									<f:param name="id" value="#{prd.id}" />
+								</h:link>
+
+							</p:column>
+
+							<p:column headerText="Preço" sortBy="#{prd.precoVenda}">
+								<h:outputLabel value="#{prd.precoVenda}" />
+							</p:column>
+
+						</p:dataTable>
+					</div>
+				</div>
+
+			</h:form>
+
+			<p:dialog header="Produtos Selecionada"
+				widgetVar="produtoSelecionadas" height="250" width="400"
+				responsive="true" styleClass="box-success">
+				<p:dataList id="listaProdutoSelecionadas"
+					value="#{listaProdutoMB.produtosSelecionados}" var="prd"
+					type="definition">
+		                        
+		                        ID: #{prd.id} - Nome: #{prd.descricao} - Tipo: #{prd.precoVenda} - UN: #{prd.unidade}
+	
+		            </p:dataList>
+			</p:dialog>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
